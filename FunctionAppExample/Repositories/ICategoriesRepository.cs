@@ -2,15 +2,14 @@
 using FunctionAppExample.Models;
 using FunctionAppExample.ResponseDtos;
 
-namespace FunctionAppExample.Repositories
+namespace FunctionAppExample.Repositories;
+
+public interface ICategoriesRepository
 {
-    public interface ICategoriesRepository
-    {
-        Task<string> AddCategoryAsync(CategoryDocument categoryObject);
-        Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId);
-        Task UpdateCategoryAsync(CategoryDocument categoryDocument);
-        Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
-        Task<CategorySummaries> ListCategoriesAsync(string userId);
-        Task<CategoryDocument> FindCategoryWithItemAsync(string itemId, ItemType itemType, string userId);
-    }
+    Task<string> AddCategoryAsync(CategoryDocument categoryObject);
+    Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId);
+    Task UpdateCategoryAsync(CategoryDocument categoryDocument);
+    Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
+    Task<CategorySummaries> ListCategoriesAsync(string userId);
+    Task<CategoryDocument> FindCategoryWithItemAsync(string itemId, ItemType itemType, string userId);
 }

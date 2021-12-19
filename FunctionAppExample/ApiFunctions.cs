@@ -21,8 +21,13 @@ namespace FunctionAppExample;
 public class ApiFunctions
 {
     private const string JsonContentType = "application/json";
-    private static readonly ICategoriesService CategoriesService = new CategoriesService(new CategoriesRepository(new ConfigurationReader()), new ImageSearchService(new Random(), new HttpClient()));
-    private static readonly IUserAuthenticationService UserAuthenticationService = new QueryStringUserAuthenticationService();
+
+    private static readonly ICategoriesService CategoriesService = new CategoriesService(
+        new CategoriesRepository(new ConfigurationReader()),
+        new ImageSearchService(new Random(), new HttpClient(), new ConfigurationReader()));
+
+    private static readonly IUserAuthenticationService UserAuthenticationService =
+        new QueryStringUserAuthenticationService();
 
     private readonly ILogger<ApiFunctions> _logger;
 
@@ -33,7 +38,8 @@ public class ApiFunctions
 
     [FunctionName("AddCategory")]
     public async Task<IActionResult> AddCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "categories")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "categories")]
+        HttpRequest req)
     {
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         CreateCategoryRequest data;
@@ -43,23 +49,19 @@ public class ApiFunctions
         }
         catch (JsonReaderException)
         {
-            return new BadRequestObjectResult(new { error = "Body should be provided in JSON format." });
+            return new BadRequestObjectResult(new {error = "Body should be provided in JSON format."});
         }
 
         if (data == null || string.IsNullOrEmpty(data.Name))
-        {
-            return new BadRequestObjectResult(new { error = "Missing required property 'name'." });
-        }
+            return new BadRequestObjectResult(new {error = "Missing required property 'name'."});
 
         if (!await UserAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
-        {
             return responseResult;
-        }
 
         try
         {
             var categoryId = await CategoriesService.AddCategoryAsync(data.Name, userId);
-            return new OkObjectResult(new { id = categoryId });
+            return new OkObjectResult(new {id = categoryId});
         }
         catch (Exception ex)
         {
@@ -70,21 +72,19 @@ public class ApiFunctions
 
     [FunctionName("DeleteCategory")]
     public async Task<IActionResult> DeleteCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "categories/{id}")] HttpRequest req, string id)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "categories/{id}")]
+        HttpRequest req, string id)
     {
         if (string.IsNullOrEmpty(id))
-        {
-            return new BadRequestObjectResult(new { error = "Missing required argument 'id'." });
-        }
+            return new BadRequestObjectResult(new {error = "Missing required argument 'id'."});
 
         if (!await UserAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
-        {
             return responseResult;
-        }
 
         try
         {
-            await CategoriesService.DeleteCategoryAsync(id, userId); // we ignore the result of this call - whether it's Success or NotFound, we return an 'Ok' back to the client
+            await CategoriesService.DeleteCategoryAsync(id,
+                userId); // we ignore the result of this call - whether it's Success or NotFound, we return an 'Ok' back to the client
             return new NoContentResult();
         }
         catch (Exception ex)
@@ -96,7 +96,8 @@ public class ApiFunctions
 
     [FunctionName("UpdateCategory")]
     public async Task<IActionResult> UpdateCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "categories/{id}")] HttpRequest req, string id)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "categories/{id}")]
+        HttpRequest req, string id)
     {
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         UpdateCategoryRequest data;
@@ -106,41 +107,27 @@ public class ApiFunctions
         }
         catch (JsonReaderException)
         {
-            return new BadRequestObjectResult(new { error = "Body should be provided in JSON format." });
+            return new BadRequestObjectResult(new {error = "Body should be provided in JSON format."});
         }
 
-        if (data == null)
-        {
-            return new BadRequestObjectResult(new { error = "Missing required property 'name'." });
-        }
+        if (data == null) return new BadRequestObjectResult(new {error = "Missing required property 'name'."});
 
         if (data.Id != null && id != null && data.Id != id)
-        {
-            return new BadRequestObjectResult(new { error = "Property 'id' does not match the identifier specified in the URL path." });
-        }
+            return new BadRequestObjectResult(new
+                {error = "Property 'id' does not match the identifier specified in the URL path."});
 
-        if (string.IsNullOrEmpty(data.Id))
-        {
-            data.Id = id;
-        }
+        if (string.IsNullOrEmpty(data.Id)) data.Id = id;
 
         if (string.IsNullOrEmpty(data.Name))
-        {
-            return new BadRequestObjectResult(new { error = "Missing required property 'name'." });
-        }
+            return new BadRequestObjectResult(new {error = "Missing required property 'name'."});
 
         if (!await UserAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
-        {
             return responseResult;
-        }
 
         try
         {
             var result = await CategoriesService.UpdateCategoryAsync(data.Id, userId, data.Name);
-            if (result == UpdateCategoryResult.NotFound)
-            {
-                return new NotFoundResult();
-            }
+            if (result == UpdateCategoryResult.NotFound) return new NotFoundResult();
 
             return new NoContentResult();
         }
@@ -153,20 +140,16 @@ public class ApiFunctions
 
     [FunctionName("GetCategory")]
     public async Task<IActionResult> GetCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories/{id}")] HttpRequest req, string id)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories/{id}")]
+        HttpRequest req, string id)
     {
         if (!await UserAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
-        {
             return responseResult;
-        }
 
         try
         {
             var document = await CategoriesService.GetCategoryAsync(id, userId);
-            if (document == null)
-            {
-                return new NotFoundResult();
-            }
+            if (document == null) return new NotFoundResult();
 
             return new OkObjectResult(document);
         }
@@ -179,20 +162,16 @@ public class ApiFunctions
 
     [FunctionName("ListCategories")]
     public async Task<IActionResult> ListCategories(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories")]
+        HttpRequest req)
     {
         if (!await UserAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
-        {
             return responseResult;
-        }
 
         try
         {
             var summaries = await CategoriesService.ListCategoriesAsync(userId);
-            if (summaries == null)
-            {
-                return new NotFoundResult();
-            }
+            if (summaries == null) return new NotFoundResult();
 
             var settings = new JsonSerializerSettings
             {

@@ -32,10 +32,7 @@ public class CategoriesService : ICategoriesService
     public async Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId)
     {
         var result = await CategoriesRepository.DeleteCategoryAsync(categoryId, userId);
-        if (result == DeleteCategoryResult.NotFound)
-        {
-            return DeleteCategoryResult.NotFound;
-        }
+        if (result == DeleteCategoryResult.NotFound) return DeleteCategoryResult.NotFound;
 
         return DeleteCategoryResult.Success;
     }
@@ -43,10 +40,7 @@ public class CategoriesService : ICategoriesService
     public async Task<UpdateCategoryResult> UpdateCategoryAsync(string categoryId, string userId, string name)
     {
         var categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);
-        if (categoryDocument == null)
-        {
-            return UpdateCategoryResult.NotFound;
-        }
+        if (categoryDocument == null) return UpdateCategoryResult.NotFound;
 
         categoryDocument.Name = name;
         await CategoriesRepository.UpdateCategoryAsync(categoryDocument);
@@ -57,10 +51,7 @@ public class CategoriesService : ICategoriesService
     public async Task<CategoryDetails> GetCategoryAsync(string categoryId, string userId)
     {
         var categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);
-        if (categoryDocument == null)
-        {
-            return null;
-        }
+        if (categoryDocument == null) return null;
 
         return new CategoryDetails
         {
@@ -85,16 +76,10 @@ public class CategoriesService : ICategoriesService
     public async Task<bool> UpdateCategoryImageAsync(string categoryId, string userId)
     {
         var categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);
-        if (categoryDocument == null)
-        {
-            return false;
-        }
+        if (categoryDocument == null) return false;
 
         var imageUrl = await ImageSearchService.FindImageUrlAsync(categoryDocument.Name);
-        if (string.IsNullOrEmpty(imageUrl))
-        {
-            return false;
-        }
+        if (string.IsNullOrEmpty(imageUrl)) return false;
 
         // get the document again, to reduce the likelihood of concurrency races
         categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);

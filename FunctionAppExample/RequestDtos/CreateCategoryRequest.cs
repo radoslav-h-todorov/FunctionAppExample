@@ -4,6 +4,5 @@ namespace FunctionAppExample.RequestDtos;
 
 public class CreateCategoryRequest
 {
-    [JsonProperty("name")]
-    public string Name;
+    [JsonProperty("name")] public string Name;
 }

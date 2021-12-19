@@ -1,56 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using FunctionAppExample.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace FunctionAppExample.Services
+namespace FunctionAppExample.Services;
+
+public class ImageSearchService : IImageSearchService
 {
-    public class ImageSearchService : IImageSearchService
+    private readonly IConfigurationReader _configurationReader;
+    private readonly HttpClient _httpClient;
+    private readonly Random _random;
+
+    public ImageSearchService(Random random, HttpClient httpClient, IConfigurationReader configurationReader)
     {
-        private static readonly string CognitiveServicesSearchApiEndpoint = Environment.GetEnvironmentVariable("CognitiveServicesSearchApiEndpoint");
-        private static readonly string CognitiveServicesSearchApiKey = Environment.GetEnvironmentVariable("CognitiveServicesSearchApiKey");
+        _random = random;
+        _httpClient = httpClient;
+        _configurationReader = configurationReader;
+    }
 
-        protected readonly HttpClient HttpClient;
-        protected readonly Random Random;
+    public async Task<string> FindImageUrlAsync(string searchTerm)
+    {
+        _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _configurationReader.CognitiveServices.SearchApiKey);
 
-        public ImageSearchService(Random random, HttpClient httpClient)
-        {
-            Random = random;
-            HttpClient = httpClient;
-        }
+        // construct the URI of the search request
+        var uriBuilder = new UriBuilder(_configurationReader.CognitiveServices.SearchApiEndpoint);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["q"] = searchTerm;
+        uriBuilder.Query = query.ToString();
+        var uriQuery = uriBuilder.ToString();
 
-        public async Task<string> FindImageUrlAsync(string searchTerm)
-        {
-            HttpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", CognitiveServicesSearchApiKey);
+        // execute the request
+        var response = await _httpClient.GetAsync(uriQuery);
+        response.EnsureSuccessStatusCode();
 
-            // construct the URI of the search request
-            var uriBuilder = new UriBuilder(CognitiveServicesSearchApiEndpoint);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["q"] = searchTerm;
-            uriBuilder.Query = query.ToString();
-            var uriQuery = uriBuilder.ToString();
+        // get the results
+        var contentString = await response.Content.ReadAsStringAsync();
+        dynamic responseJson = JObject.Parse(contentString);
+        var results = (JArray) responseJson.value;
+        if (results.Count == 0) return null;
 
-            // execute the request
-            var response = await HttpClient.GetAsync(uriQuery);
-            response.EnsureSuccessStatusCode();
-
-            // get the results
-            var contentString = await response.Content.ReadAsStringAsync();
-            dynamic responseJson = JObject.Parse(contentString);
-            var results = (JArray)responseJson.value;
-            if (results.Count == 0)
-            {
-                return null;
-            }
-
-            // pick a random result
-            var index = Random.Next(0, results.Count - 1);
-            var topResult = (dynamic)results[index];
-            return topResult.contentUrl;
-        }
+        // pick a random result
+        var index = _random.Next(0, results.Count - 1);
+        var topResult = (dynamic) results[index];
+        return topResult.contentUrl;
     }
 }

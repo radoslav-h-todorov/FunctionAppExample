@@ -8,13 +8,13 @@ public class CategorySummariesConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {
-        return (objectType == typeof(CategorySummaries));
+        return objectType == typeof(CategorySummaries);
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteStartObject();
-        foreach (var summary in (CategorySummaries)value)
+        foreach (var summary in (CategorySummaries) value)
         {
             writer.WritePropertyName(summary.Id);
             summary.Id = null;

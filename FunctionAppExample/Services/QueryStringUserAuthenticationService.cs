@@ -22,14 +22,16 @@ public class QueryStringUserAuthenticationService : IUserAuthenticationService
 
         if (string.IsNullOrEmpty(userIdParameter) || userIdParameter.Count == 0)
         {
-            responseResult = new BadRequestObjectResult(new { error = "Missing mandatory 'userId' parameter in query string." });
+            responseResult =
+                new BadRequestObjectResult(new {error = "Missing mandatory 'userId' parameter in query string."});
             userId = null;
             return Task.FromResult(false);
         }
 
         if (userIdParameter.Count > 1)
         {
-            responseResult = new BadRequestObjectResult(new { error = "Please only specify one 'userId' parameter in query string." });
+            responseResult = new BadRequestObjectResult(new
+                {error = "Please only specify one 'userId' parameter in query string."});
             userId = null;
             return Task.FromResult(false);
         }
