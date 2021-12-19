@@ -20,22 +20,24 @@ using Newtonsoft.Json;
 
 namespace FunctionAppExample.Api;
 
-public class ApiFunctions
+public class CategoriesApiFunctions
 {
     private const string JsonContentType = "application/json";
 
-    private readonly ICategoriesService _categoriesService = new CategoriesService(new CategoriesRepository(), new ImageSearchService(new Random(), new HttpClient()));
-    private readonly IUserAuthenticationService _userAuthenticationService = new QueryStringUserAuthenticationService();
-    private readonly ILogger<ApiFunctions> _logger;
+    private readonly ICategoriesService _categoriesService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
+    private readonly ILogger<CategoriesApiFunctions> _logger;
 
-    public ApiFunctions(ILogger<ApiFunctions> log)
+    public CategoriesApiFunctions(ILogger<CategoriesApiFunctions> log)
     {
+        _categoriesService = new CategoriesService(new CategoriesRepository(), new ImageSearchService(new Random(), new HttpClient()));
+        _userAuthenticationService = new QueryStringUserAuthenticationService();
         _logger = log;
     }
 
     [FunctionName("AddCategory")]
     public async Task<IActionResult> AddCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "categories")]
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "categories")]
         HttpRequest req)
     {
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -73,7 +75,7 @@ public class ApiFunctions
 
     [FunctionName("DeleteCategory")]
     public async Task<IActionResult> DeleteCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "categories/{id}")]
+        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "categories/{id}")]
         HttpRequest req, string id)
     {
         if (string.IsNullOrEmpty(id))
@@ -101,7 +103,7 @@ public class ApiFunctions
 
     [FunctionName("UpdateCategory")]
     public async Task<IActionResult> UpdateCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "patch", Route = "categories/{id}")]
+        [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "categories/{id}")]
         HttpRequest req, string id)
     {
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -144,7 +146,10 @@ public class ApiFunctions
         try
         {
             var result = await _categoriesService.UpdateCategoryAsync(data.Id, userId, data.Name);
-            if (!result) return new NotFoundResult();
+            if (!result)
+            {
+                return new NotFoundResult();
+            }
 
             return new NoContentResult();
         }
@@ -157,7 +162,7 @@ public class ApiFunctions
 
     [FunctionName("GetCategory")]
     public async Task<IActionResult> GetCategory(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories/{id}")]
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "categories/{id}")]
         HttpRequest req, string id)
     {
         if (!await _userAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
@@ -173,7 +178,7 @@ public class ApiFunctions
                 return new NotFoundResult();
             }
             
-            // TODO: AutoMapper
+            // TODO: Use AutoMapper
             var categoryDetailsResponse =  new CategoryDetailsResponse
             {
                 Id = categoryDocument.Id,
@@ -198,7 +203,7 @@ public class ApiFunctions
 
     [FunctionName("ListCategories")]
     public async Task<IActionResult> ListCategories(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "categories")]
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "categories")]
         HttpRequest req)
     {
         if (!await _userAuthenticationService.GetUserIdAsync(req, out var userId, out var responseResult))
@@ -210,7 +215,7 @@ public class ApiFunctions
         {
             var categoryDocuments = await _categoriesService.ListCategoriesAsync(userId);
 
-            // TODO: AutoMapper
+            // TODO: Use AutoMapper
             var categorySummaries = new CategorySummariesResponse();
             foreach (var categoryDocument in categoryDocuments)
             {
