@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppExample.Api", "FunctionAppExample.Api\FunctionAppExample.Api.csproj", "{6FA3C938-B5F8-4E6D-9D6C-12C68410FFF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppExample.BusinessLogic", "FunctionAppExample.BusinessLogic\FunctionAppExample.BusinessLogic.csproj", "{C7A78D9F-E9DD-4B64-BB5F-42B57EAFB793}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppExample.BusinessLogic", "FunctionAppExample.BusinessLogic\FunctionAppExample.BusinessLogic.csproj", "{C7A78D9F-E9DD-4B64-BB5F-42B57EAFB793}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppExample.DataAccess", "FunctionAppExample.DataAccess\FunctionAppExample.DataAccess.csproj", "{1A33FF60-1809-43BB-BF7E-C4BB9A04596E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppExample.DataAccess", "FunctionAppExample.DataAccess\FunctionAppExample.DataAccess.csproj", "{1A33FF60-1809-43BB-BF7E-C4BB9A04596E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

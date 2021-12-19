@@ -65,7 +65,10 @@ public class CategoriesService : ICategoriesService
         }
 
         var imageUrl = await _imageSearchService.FindImageUrlAsync(categoryDocument.Name);
-        if (string.IsNullOrEmpty(imageUrl)) return false;
+        if (string.IsNullOrEmpty(imageUrl))
+        {
+            return false;
+        }
 
         // get the document again, to reduce the likelihood of concurrency races
         categoryDocument = await _categoriesRepository.GetCategoryAsync(categoryId, userId);

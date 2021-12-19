@@ -28,11 +28,11 @@ public class CategoriesApiFunctions
     private readonly IUserAuthenticationService _userAuthenticationService;
     private readonly ILogger<CategoriesApiFunctions> _logger;
 
-    public CategoriesApiFunctions(ILogger<CategoriesApiFunctions> log)
+    public CategoriesApiFunctions(ILogger<CategoriesApiFunctions> logger)
     {
         _categoriesService = new CategoriesService(new CategoriesRepository(), new ImageSearchService(new Random(), new HttpClient()));
         _userAuthenticationService = new QueryStringUserAuthenticationService();
-        _logger = log;
+        _logger = logger;
     }
 
     [FunctionName("AddCategory")]
