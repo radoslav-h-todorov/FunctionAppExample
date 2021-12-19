@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FunctionAppExample.Models;
-using FunctionAppExample.ResponseDtos;
 
 namespace FunctionAppExample.Repositories;
 
@@ -10,6 +10,5 @@ public interface ICategoriesRepository
     Task<bool> DeleteCategoryAsync(string categoryId, string userId);
     Task UpdateCategoryAsync(CategoryDocument categoryDocument);
     Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
-    Task<CategorySummariesResponse> ListCategoriesAsync(string userId);
-    Task<CategoryDocument> FindCategoryWithItemAsync(string itemId, ItemType itemType, string userId);
+    Task<List<CategoryDocument>> ListCategoriesAsync(string userId);
 }

@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FunctionAppExample.Configuration;
 using FunctionAppExample.Models;
-using FunctionAppExample.ResponseDtos;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
@@ -14,7 +14,6 @@ namespace FunctionAppExample.Repositories;
 public class CategoriesRepository : ICategoriesRepository
 {
     private readonly IConfigurationReader _configurationReader;
-
     private readonly DocumentClient _documentClient;
 
     public CategoriesRepository(IConfigurationReader configurationReader)
@@ -58,6 +57,7 @@ public class CategoriesRepository : ICategoriesRepository
             Condition = categoryDocument.ETag,
             Type = AccessConditionType.IfMatch
         };
+        
         return _documentClient.ReplaceDocumentAsync(documentUri, categoryDocument,
             new RequestOptions {AccessCondition = concurrencyCondition});
     }
@@ -74,53 +74,25 @@ public class CategoriesRepository : ICategoriesRepository
         }
         catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            // we return null to indicate the document was not found
             return null;
         }
     }
 
-    public async Task<CategoryDocument> FindCategoryWithItemAsync(string itemId, ItemType itemType, string userId)
+    public async Task<List<CategoryDocument>> ListCategoriesAsync(string userId)
     {
         var documentUri =
             UriFactory.CreateDocumentCollectionUri(_configurationReader.CosmosDb.DatabaseName,
                 _configurationReader.CosmosDb.CollectionName);
-
-        // create a query to find the category with this item in it
-        var sqlQuery =
-            "SELECT * FROM c WHERE c.userId = @userId AND ARRAY_CONTAINS(c.items, { id: @itemId, type: @itemType }, true)";
-        var sqlParameters = new SqlParameterCollection
-        {
-            new("@userId", userId),
-            new("@itemId", itemId),
-            new("@itemType", itemType.ToString())
-        };
-        var query = _documentClient
-            .CreateDocumentQuery<CategoryDocument>(documentUri, new SqlQuerySpec(sqlQuery, sqlParameters))
-            .AsDocumentQuery();
-
-        // execute the query
-        var response = await query.ExecuteNextAsync<CategoryDocument>();
-        return response.SingleOrDefault();
-    }
-
-    public async Task<CategorySummariesResponse> ListCategoriesAsync(string userId)
-    {
-        var documentUri =
-            UriFactory.CreateDocumentCollectionUri(_configurationReader.CosmosDb.DatabaseName,
-                _configurationReader.CosmosDb.CollectionName);
-
-        // create a query to just get the document ids
+        
         var query = _documentClient
             .CreateDocumentQuery<CategoryDocument>(documentUri)
             .Where(d => d.UserId == userId)
-            .Select(d => new CategorySummaryResponse {Id = d.Id, Name = d.Name})
             .AsDocumentQuery();
-
-        // iterate until we have all of the ids
-        var list = new CategorySummariesResponse();
+        
+        var list = new List<CategoryDocument>();
         while (query.HasMoreResults)
         {
-            var summaries = await query.ExecuteNextAsync<CategorySummaryResponse>();
+            var summaries = await query.ExecuteNextAsync<CategoryDocument>();
             list.AddRange(summaries);
         }
 

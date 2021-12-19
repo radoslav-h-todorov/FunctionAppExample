@@ -65,9 +65,17 @@ public class CategoriesService : ICategoriesService
         };
     }
 
-    public Task<CategorySummariesResponse> ListCategoriesAsync(string userId)
+    public async Task<CategorySummariesResponse> ListCategoriesAsync(string userId)
     {
-        return CategoriesRepository.ListCategoriesAsync(userId);
+        var categoryDocuments = await CategoriesRepository.ListCategoriesAsync(userId);
+        var categorySummaries = new CategorySummariesResponse();
+        
+        foreach (var categoryDocument in categoryDocuments)
+        {
+            categorySummaries.Add(new CategorySummaryResponse(){ Id = categoryDocument.Id, Name = categoryDocument.Name});
+        }
+
+        return categorySummaries;
     }
 
     public async Task<bool> UpdateCategoryImageAsync(string categoryId, string userId)
