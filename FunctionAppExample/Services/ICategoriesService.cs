@@ -7,8 +7,8 @@ namespace FunctionAppExample.Services;
 public interface ICategoriesService
 {
     Task<string> AddCategoryAsync(string name, string userId);
-    Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId);
-    Task<UpdateCategoryResult> UpdateCategoryAsync(string categoryId, string userId, string name);
+    Task<bool> DeleteCategoryAsync(string categoryId, string userId);
+    Task<bool> UpdateCategoryAsync(string categoryId, string userId, string name);
     Task<CategoryDetailsResponse> GetCategoryAsync(string categoryId, string userId);
     Task<CategorySummariesResponse> ListCategoriesAsync(string userId);
     Task<bool> UpdateCategoryImageAsync(string categoryId, string userId);

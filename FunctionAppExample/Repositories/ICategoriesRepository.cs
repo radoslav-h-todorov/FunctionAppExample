@@ -7,7 +7,7 @@ namespace FunctionAppExample.Repositories;
 public interface ICategoriesRepository
 {
     Task<string> AddCategoryAsync(CategoryDocument categoryObject);
-    Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId);
+    Task<bool> DeleteCategoryAsync(string categoryId, string userId);
     Task UpdateCategoryAsync(CategoryDocument categoryDocument);
     Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
     Task<CategorySummariesResponse> ListCategoriesAsync(string userId);

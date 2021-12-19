@@ -29,23 +29,20 @@ public class CategoriesService : ICategoriesService
         return categoryId;
     }
 
-    public async Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId)
+    public async Task<bool> DeleteCategoryAsync(string categoryId, string userId)
     {
-        var result = await CategoriesRepository.DeleteCategoryAsync(categoryId, userId);
-        if (result == DeleteCategoryResult.NotFound) return DeleteCategoryResult.NotFound;
-
-        return DeleteCategoryResult.Success;
+        return await CategoriesRepository.DeleteCategoryAsync(categoryId, userId);
     }
 
-    public async Task<UpdateCategoryResult> UpdateCategoryAsync(string categoryId, string userId, string name)
+    public async Task<bool> UpdateCategoryAsync(string categoryId, string userId, string name)
     {
         var categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);
-        if (categoryDocument == null) return UpdateCategoryResult.NotFound;
+        if (categoryDocument == null) return false;
 
         categoryDocument.Name = name;
         await CategoriesRepository.UpdateCategoryAsync(categoryDocument);
 
-        return UpdateCategoryResult.Success;
+        return true;
     }
 
     public async Task<CategoryDetailsResponse> GetCategoryAsync(string categoryId, string userId)

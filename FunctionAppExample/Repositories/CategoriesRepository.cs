@@ -33,7 +33,7 @@ public class CategoriesRepository : ICategoriesRepository
         return doc.Id;
     }
 
-    public async Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId)
+    public async Task<bool> DeleteCategoryAsync(string categoryId, string userId)
     {
         var documentUri = UriFactory.CreateDocumentUri(_configurationReader.CosmosDb.DatabaseName,
             _configurationReader.CosmosDb.CollectionName, categoryId);
@@ -41,12 +41,11 @@ public class CategoriesRepository : ICategoriesRepository
         {
             await _documentClient.DeleteDocumentAsync(documentUri,
                 new RequestOptions {PartitionKey = new PartitionKey(userId)});
-            return DeleteCategoryResult.Success;
+            return true;
         }
         catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            // we return the NotFound result to indicate the document was not found
-            return DeleteCategoryResult.NotFound;
+            return false;
         }
     }
 

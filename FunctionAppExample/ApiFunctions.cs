@@ -127,7 +127,7 @@ public class ApiFunctions
         try
         {
             var result = await CategoriesService.UpdateCategoryAsync(data.Id, userId, data.Name);
-            if (result == UpdateCategoryResult.NotFound) return new NotFoundResult();
+            if (!result) return new NotFoundResult();
 
             return new NoContentResult();
         }
