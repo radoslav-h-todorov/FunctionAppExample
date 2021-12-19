@@ -104,7 +104,7 @@ public class CategoriesRepository : ICategoriesRepository
         return response.SingleOrDefault();
     }
 
-    public async Task<CategorySummaries> ListCategoriesAsync(string userId)
+    public async Task<CategorySummariesResponse> ListCategoriesAsync(string userId)
     {
         var documentUri =
             UriFactory.CreateDocumentCollectionUri(_configurationReader.CosmosDb.DatabaseName,
@@ -114,14 +114,14 @@ public class CategoriesRepository : ICategoriesRepository
         var query = _documentClient
             .CreateDocumentQuery<CategoryDocument>(documentUri)
             .Where(d => d.UserId == userId)
-            .Select(d => new CategorySummary {Id = d.Id, Name = d.Name})
+            .Select(d => new CategorySummaryResponse {Id = d.Id, Name = d.Name})
             .AsDocumentQuery();
 
         // iterate until we have all of the ids
-        var list = new CategorySummaries();
+        var list = new CategorySummariesResponse();
         while (query.HasMoreResults)
         {
-            var summaries = await query.ExecuteNextAsync<CategorySummary>();
+            var summaries = await query.ExecuteNextAsync<CategorySummaryResponse>();
             list.AddRange(summaries);
         }
 

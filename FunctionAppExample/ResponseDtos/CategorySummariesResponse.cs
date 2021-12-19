@@ -2,6 +2,6 @@
 
 namespace FunctionAppExample.ResponseDtos;
 
-public class CategorySummaries : List<CategorySummary>
+public class CategorySummariesResponse : List<CategorySummaryResponse>
 {
 }

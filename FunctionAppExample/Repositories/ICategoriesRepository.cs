@@ -10,6 +10,6 @@ public interface ICategoriesRepository
     Task<DeleteCategoryResult> DeleteCategoryAsync(string categoryId, string userId);
     Task UpdateCategoryAsync(CategoryDocument categoryDocument);
     Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
-    Task<CategorySummaries> ListCategoriesAsync(string userId);
+    Task<CategorySummariesResponse> ListCategoriesAsync(string userId);
     Task<CategoryDocument> FindCategoryWithItemAsync(string itemId, ItemType itemType, string userId);
 }

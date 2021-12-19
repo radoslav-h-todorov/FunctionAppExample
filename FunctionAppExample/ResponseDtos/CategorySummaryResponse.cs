@@ -2,7 +2,7 @@
 
 namespace FunctionAppExample.ResponseDtos;
 
-public class CategorySummary
+public class CategorySummaryResponse
 {
     public string Id { get; set; }
 

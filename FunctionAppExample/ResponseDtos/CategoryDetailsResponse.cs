@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace FunctionAppExample.ResponseDtos;
 
-public class CategoryDetails
+public class CategoryDetailsResponse
 {
     [JsonProperty("id")] public string Id { get; set; }
 
@@ -13,5 +13,5 @@ public class CategoryDetails
 
     [JsonProperty("synonyms")] public IList<string> Synonyms { get; set; }
 
-    [JsonProperty("items")] public IList<CategoryItemDetails> Items { get; set; }
+    [JsonProperty("items")] public IList<CategoryItemDetailsResponse> Items { get; set; }
 }

@@ -48,18 +48,18 @@ public class CategoriesService : ICategoriesService
         return UpdateCategoryResult.Success;
     }
 
-    public async Task<CategoryDetails> GetCategoryAsync(string categoryId, string userId)
+    public async Task<CategoryDetailsResponse> GetCategoryAsync(string categoryId, string userId)
     {
         var categoryDocument = await CategoriesRepository.GetCategoryAsync(categoryId, userId);
         if (categoryDocument == null) return null;
 
-        return new CategoryDetails
+        return new CategoryDetailsResponse
         {
             Id = categoryDocument.Id,
             ImageUrl = categoryDocument.ImageUrl,
             Name = categoryDocument.Name,
             Synonyms = categoryDocument.Synonyms,
-            Items = categoryDocument.Items.Select(i => new CategoryItemDetails
+            Items = categoryDocument.Items.Select(i => new CategoryItemDetailsResponse
             {
                 Id = i.Id,
                 Type = i.Type,
@@ -68,7 +68,7 @@ public class CategoriesService : ICategoriesService
         };
     }
 
-    public Task<CategorySummaries> ListCategoriesAsync(string userId)
+    public Task<CategorySummariesResponse> ListCategoriesAsync(string userId)
     {
         return CategoriesRepository.ListCategoriesAsync(userId);
     }

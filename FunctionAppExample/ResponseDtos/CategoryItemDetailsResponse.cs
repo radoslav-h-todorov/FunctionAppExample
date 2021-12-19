@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace FunctionAppExample.ResponseDtos;
 
-public class CategoryItemDetails
+public class CategoryItemDetailsResponse
 {
     [JsonProperty("id")] public string Id { get; set; }
 
