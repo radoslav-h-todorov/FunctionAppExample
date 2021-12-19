@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace FunctionAppExample.Models;
+namespace FunctionAppExample.DataAccess.Models;
 
 public class CategoryItem
 {

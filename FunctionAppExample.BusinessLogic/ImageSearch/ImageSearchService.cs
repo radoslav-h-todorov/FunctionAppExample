@@ -1,10 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Web;
 using Newtonsoft.Json.Linq;
 
-namespace FunctionAppExample.Services;
+namespace FunctionAppExample.BusinessLogic.ImageSearch;
 
 public class ImageSearchService : IImageSearchService
 {
@@ -39,11 +36,15 @@ public class ImageSearchService : IImageSearchService
         var contentString = await response.Content.ReadAsStringAsync();
         dynamic responseJson = JObject.Parse(contentString);
         var results = (JArray) responseJson.value;
-        if (results.Count == 0) return null;
+        if (results.Count == 0)
+        {
+            return null;
+        }
 
         // pick a random result
         var index = _random.Next(0, results.Count - 1);
         var topResult = (dynamic) results[index];
+        
         return topResult.contentUrl;
     }
 }

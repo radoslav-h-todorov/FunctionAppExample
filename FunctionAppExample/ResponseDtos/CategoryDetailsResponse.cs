@@ -10,8 +10,6 @@ public class CategoryDetailsResponse
     [JsonProperty("name")] public string Name { get; set; }
 
     [JsonProperty("imageUrl")] public string ImageUrl { get; set; }
-
-    [JsonProperty("synonyms")] public IList<string> Synonyms { get; set; }
-
+    
     [JsonProperty("items")] public IList<CategoryItemDetailsResponse> Items { get; set; }
 }

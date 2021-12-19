@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FunctionAppExample.Models;
+﻿using FunctionAppExample.DataAccess.Models;
 
-namespace FunctionAppExample.Repositories;
+namespace FunctionAppExample.DataAccess.Repositories;
 
 public interface ICategoriesRepository
 {

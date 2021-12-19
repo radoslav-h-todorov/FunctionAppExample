@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FunctionAppExample.Services;
+namespace FunctionAppExample.BusinessLogic.UserAuthentication;
 
 public class QueryStringUserAuthenticationService : IUserAuthenticationService
 {
@@ -38,7 +36,7 @@ public class QueryStringUserAuthenticationService : IUserAuthenticationService
 
         // we have a valid user ID that we can return
         responseResult = null;
-        userId = userIdParameter.Single();
+        userId = Enumerable.Single<string>(userIdParameter);
         return Task.FromResult(true);
     }
 }

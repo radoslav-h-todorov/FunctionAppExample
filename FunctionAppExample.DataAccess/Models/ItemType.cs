@@ -1,4 +1,4 @@
-﻿namespace FunctionAppExample.Models;
+﻿namespace FunctionAppExample.DataAccess.Models;
 
 public enum ItemType
 {

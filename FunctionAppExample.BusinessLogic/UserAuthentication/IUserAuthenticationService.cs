@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FunctionAppExample.Services;
+namespace FunctionAppExample.BusinessLogic.UserAuthentication;
 
 public interface IUserAuthenticationService
 {

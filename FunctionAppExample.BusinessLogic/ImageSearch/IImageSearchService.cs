@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace FunctionAppExample.Services;
+﻿namespace FunctionAppExample.BusinessLogic.ImageSearch;
 
 public interface IImageSearchService
 {

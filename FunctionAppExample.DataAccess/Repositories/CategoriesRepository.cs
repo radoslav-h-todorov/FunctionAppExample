@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using FunctionAppExample.Models;
+﻿using System.Net;
+using FunctionAppExample.DataAccess.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 
-namespace FunctionAppExample.Repositories;
+namespace FunctionAppExample.DataAccess.Repositories;
 
 public class CategoriesRepository : ICategoriesRepository
 {

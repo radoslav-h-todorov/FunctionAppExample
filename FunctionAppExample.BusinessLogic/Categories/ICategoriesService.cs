@@ -1,14 +1,13 @@
-﻿using System.Threading.Tasks;
-using FunctionAppExample.ResponseDtos;
+﻿using FunctionAppExample.DataAccess.Models;
 
-namespace FunctionAppExample.Services;
+namespace FunctionAppExample.BusinessLogic.Categories;
 
 public interface ICategoriesService
 {
     Task<string> AddCategoryAsync(string name, string userId);
     Task<bool> DeleteCategoryAsync(string categoryId, string userId);
     Task<bool> UpdateCategoryAsync(string categoryId, string userId, string name);
-    Task<CategoryDetailsResponse> GetCategoryAsync(string categoryId, string userId);
-    Task<CategorySummariesResponse> ListCategoriesAsync(string userId);
+    Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId);
+    Task<List<CategoryDocument>> ListCategoriesAsync(string userId);
     Task<bool> UpdateCategoryImageAsync(string categoryId, string userId);
 }
