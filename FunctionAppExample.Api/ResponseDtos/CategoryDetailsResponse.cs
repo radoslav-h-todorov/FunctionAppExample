@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace FunctionAppExample.ResponseDtos;
+namespace FunctionAppExample.Api.ResponseDtos;
 
 public class CategoryDetailsResponse
 {

@@ -1,8 +1,8 @@
 ﻿using System;
-using FunctionAppExample.ResponseDtos;
+using FunctionAppExample.Api.ResponseDtos;
 using Newtonsoft.Json;
 
-namespace FunctionAppExample.Converters;
+namespace FunctionAppExample.Api.Converters;
 
 public class CategorySummariesConverter : JsonConverter
 {

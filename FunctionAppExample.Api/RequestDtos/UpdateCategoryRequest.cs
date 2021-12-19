@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FunctionAppExample.RequestDtos;
+namespace FunctionAppExample.Api.RequestDtos;
 
 public class UpdateCategoryRequest
 {

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
-namespace FunctionAppExample;
+namespace FunctionAppExample.Api;
 
 public class Function1
 {

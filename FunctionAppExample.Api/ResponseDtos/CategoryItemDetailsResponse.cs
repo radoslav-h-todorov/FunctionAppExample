@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace FunctionAppExample.ResponseDtos;
+namespace FunctionAppExample.Api.ResponseDtos;
 
 public class CategoryItemDetailsResponse
 {

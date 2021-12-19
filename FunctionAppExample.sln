@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppExample", "FunctionAppExample\FunctionAppExample.csproj", "{6FA3C938-B5F8-4E6D-9D6C-12C68410FFF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppExample.Api", "FunctionAppExample.Api\FunctionAppExample.Api.csproj", "{6FA3C938-B5F8-4E6D-9D6C-12C68410FFF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppExample.BusinessLogic", "FunctionAppExample.BusinessLogic\FunctionAppExample.BusinessLogic.csproj", "{C7A78D9F-E9DD-4B64-BB5F-42B57EAFB793}"
 EndProject

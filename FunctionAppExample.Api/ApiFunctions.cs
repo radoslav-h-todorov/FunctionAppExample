@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using FunctionAppExample.Api.Converters;
+using FunctionAppExample.Api.RequestDtos;
+using FunctionAppExample.Api.ResponseDtos;
 using FunctionAppExample.BusinessLogic.Categories;
 using FunctionAppExample.BusinessLogic.ImageSearch;
 using FunctionAppExample.BusinessLogic.UserAuthentication;
-using FunctionAppExample.Converters;
 using FunctionAppExample.DataAccess.Repositories;
-using FunctionAppExample.RequestDtos;
-using FunctionAppExample.ResponseDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -18,7 +18,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace FunctionAppExample;
+namespace FunctionAppExample.Api;
 
 public class ApiFunctions
 {
