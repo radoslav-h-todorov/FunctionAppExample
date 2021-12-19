@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using FunctionAppExample.Configuration;
 using FunctionAppExample.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -13,33 +12,31 @@ namespace FunctionAppExample.Repositories;
 
 public class CategoriesRepository : ICategoriesRepository
 {
-    private readonly IConfigurationReader _configurationReader;
+    private readonly string _accountKey = Environment.GetEnvironmentVariable("CosmosDBAccountKey");
+    private readonly string _collectionName = Environment.GetEnvironmentVariable("CollectionName");
+    private readonly string _databaseName = Environment.GetEnvironmentVariable("DatabaseName");
+    private readonly string _endpointUrl = Environment.GetEnvironmentVariable("CosmosDBAccountEndpointUrl");
+    
     private readonly DocumentClient _documentClient;
-
-    public CategoriesRepository(IConfigurationReader configurationReader)
+    
+    public CategoriesRepository()
     {
-        _configurationReader = configurationReader;
-        _documentClient =
-            new DocumentClient(new Uri(_configurationReader.CosmosDb.EndpointUrl), _configurationReader.CosmosDb.AccountKey);
+        _documentClient = new DocumentClient(new Uri(_endpointUrl), _accountKey);
     }
 
     public async Task<string> AddCategoryAsync(CategoryDocument categoryDocument)
     {
-        var documentUri =
-            UriFactory.CreateDocumentCollectionUri(_configurationReader.CosmosDb.DatabaseName,
-                _configurationReader.CosmosDb.CollectionName);
+        var documentUri = UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName);
         Document doc = await _documentClient.CreateDocumentAsync(documentUri, categoryDocument);
         return doc.Id;
     }
 
     public async Task<bool> DeleteCategoryAsync(string categoryId, string userId)
     {
-        var documentUri = UriFactory.CreateDocumentUri(_configurationReader.CosmosDb.DatabaseName,
-            _configurationReader.CosmosDb.CollectionName, categoryId);
+        var documentUri = UriFactory.CreateDocumentUri(_databaseName, _collectionName, categoryId);
         try
         {
-            await _documentClient.DeleteDocumentAsync(documentUri,
-                new RequestOptions {PartitionKey = new PartitionKey(userId)});
+            await _documentClient.DeleteDocumentAsync(documentUri, new RequestOptions {PartitionKey = new PartitionKey(userId)});
             return true;
         }
         catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -50,26 +47,22 @@ public class CategoriesRepository : ICategoriesRepository
 
     public Task UpdateCategoryAsync(CategoryDocument categoryDocument)
     {
-        var documentUri = UriFactory.CreateDocumentUri(_configurationReader.CosmosDb.DatabaseName,
-            _configurationReader.CosmosDb.CollectionName, categoryDocument.Id);
+        var documentUri = UriFactory.CreateDocumentUri(_databaseName, _collectionName, categoryDocument.Id);
         var concurrencyCondition = new AccessCondition
         {
             Condition = categoryDocument.ETag,
             Type = AccessConditionType.IfMatch
         };
-        
-        return _documentClient.ReplaceDocumentAsync(documentUri, categoryDocument,
-            new RequestOptions {AccessCondition = concurrencyCondition});
+
+        return _documentClient.ReplaceDocumentAsync(documentUri, categoryDocument, new RequestOptions {AccessCondition = concurrencyCondition});
     }
 
     public async Task<CategoryDocument> GetCategoryAsync(string categoryId, string userId)
     {
-        var documentUri = UriFactory.CreateDocumentUri(_configurationReader.CosmosDb.DatabaseName,
-            _configurationReader.CosmosDb.CollectionName, categoryId);
+        var documentUri = UriFactory.CreateDocumentUri(_databaseName, _collectionName, categoryId);
         try
         {
-            var documentResponse = await _documentClient.ReadDocumentAsync<CategoryDocument>(documentUri,
-                new RequestOptions {PartitionKey = new PartitionKey(userId)});
+            var documentResponse = await _documentClient.ReadDocumentAsync<CategoryDocument>(documentUri, new RequestOptions {PartitionKey = new PartitionKey(userId)});
             return documentResponse.Document;
         }
         catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -80,15 +73,13 @@ public class CategoriesRepository : ICategoriesRepository
 
     public async Task<List<CategoryDocument>> ListCategoriesAsync(string userId)
     {
-        var documentUri =
-            UriFactory.CreateDocumentCollectionUri(_configurationReader.CosmosDb.DatabaseName,
-                _configurationReader.CosmosDb.CollectionName);
-        
+        var documentUri = UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName);
+
         var query = _documentClient
             .CreateDocumentQuery<CategoryDocument>(documentUri)
             .Where(d => d.UserId == userId)
             .AsDocumentQuery();
-        
+
         var list = new List<CategoryDocument>();
         while (query.HasMoreResults)
         {

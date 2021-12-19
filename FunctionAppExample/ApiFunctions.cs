@@ -3,9 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using FunctionAppExample.Configuration;
 using FunctionAppExample.Converters;
-using FunctionAppExample.Models;
 using FunctionAppExample.Repositories;
 using FunctionAppExample.RequestDtos;
 using FunctionAppExample.Services;
@@ -22,12 +20,9 @@ public class ApiFunctions
 {
     private const string JsonContentType = "application/json";
 
-    private static readonly ICategoriesService CategoriesService = new CategoriesService(
-        new CategoriesRepository(new ConfigurationReader()),
-        new ImageSearchService(new Random(), new HttpClient(), new ConfigurationReader()));
+    private static readonly ICategoriesService CategoriesService = new CategoriesService(new CategoriesRepository(), new ImageSearchService(new Random(), new HttpClient()));
 
-    private static readonly IUserAuthenticationService UserAuthenticationService =
-        new QueryStringUserAuthenticationService();
+    private static readonly IUserAuthenticationService UserAuthenticationService = new QueryStringUserAuthenticationService();
 
     private readonly ILogger<ApiFunctions> _logger;
 

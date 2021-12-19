@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using FunctionAppExample.Models;
 using FunctionAppExample.ResponseDtos;
 
 namespace FunctionAppExample.Services;

@@ -69,11 +69,9 @@ public class CategoriesService : ICategoriesService
     {
         var categoryDocuments = await CategoriesRepository.ListCategoriesAsync(userId);
         var categorySummaries = new CategorySummariesResponse();
-        
+
         foreach (var categoryDocument in categoryDocuments)
-        {
-            categorySummaries.Add(new CategorySummaryResponse(){ Id = categoryDocument.Id, Name = categoryDocument.Name});
-        }
+            categorySummaries.Add(new CategorySummaryResponse {Id = categoryDocument.Id, Name = categoryDocument.Name});
 
         return categorySummaries;
     }
