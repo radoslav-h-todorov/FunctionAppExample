@@ -34,8 +34,11 @@ public class CosmosDbConfiguration
     }
 
     public string CollectionName { get; }
+    
     public string DatabaseName { get; }
+    
     public string AccountKey { get; }
+    
     public string EndpointUrl { get; }
 }
 
